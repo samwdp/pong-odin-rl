@@ -31,7 +31,10 @@ main :: proc() {
     player1 := ent.Entity {
         update = ent.updatePlayer1,
         draw = ent.drawPaddle,
-        pos = {WINDOW_PADDING, f32(rl.GetScreenHeight()) / 2.0},
+        pos = {
+            WINDOW_PADDING,
+            f32(rl.GetScreenHeight()) / 2.0 - f32(paddle_height) / 2.0,
+        },
         speed = {150, 150},
         dim = {paddle_width, paddle_height},
     }
@@ -40,7 +43,7 @@ main :: proc() {
         draw = ent.drawPaddle,
         pos = {
             f32(rl.GetScreenWidth()) - paddle_width - WINDOW_PADDING,
-            f32(rl.GetScreenHeight()) / 2.0,
+            f32(rl.GetScreenHeight()) / 2.0 - f32(paddle_height) / 2.0,
         },
         speed = {150, 150},
         dim = {paddle_width, paddle_height},
