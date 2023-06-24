@@ -13,10 +13,6 @@ GameState :: struct {
     entities:      [dynamic]Entity,
 }
 
-Players :: enum {
-    LEFT,
-    RIGHT,
-}
 EntityType :: enum {
     BALL,
     PADDLE,
@@ -29,14 +25,13 @@ Entity :: struct {
     draw:            proc(self: ^Entity),
 }
 
-update_font :: proc(game: ^GameState){
+update_font :: proc(game: ^GameState) {
 
     if rl.IsKeyDown(rl.KeyboardKey.J) {
         game.font_size -= 1
     }
 
     if rl.IsKeyDown(rl.KeyboardKey.K) {
-
         game.font_size += 1
     }
 }
@@ -49,10 +44,20 @@ updateBall :: proc(self: ^Entity, game: ^GameState) {
         self.speed.y *= -1.0
     }
 
-    if self.pos.x + self.dim.x >= f32(rl.GetScreenWidth()) ||
-       self.pos.x - self.dim.x <= 0 {
+    if self.pos.x + self.dim.x >= f32(rl.GetScreenWidth()) {
+        game.player1_score += 1
+        reset_ball(self)
+    }
+    if self.pos.x - self.dim.x <= 0 {
+        game.player2_score += 1
+        reset_ball(self)
+    }
+}
 
-        self.speed.x *= -1.0
+reset_ball :: proc(self: ^Entity) {
+    self.pos = {
+        f32(rl.GetScreenWidth()) / 2.0,
+        f32(rl.GetScreenHeight()) / 2.0,
     }
 }
 

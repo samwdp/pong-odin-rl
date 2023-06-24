@@ -63,9 +63,6 @@ main :: proc() {
         font_padding = 1.0,
     }
 
-    rl.SetTargetFPS(game.target_fps)
-
-
     font := rl.LoadFont("./data/fonts/MadeleinaSans-2VY3.ttf")
     defer rl.UnloadFont(font)
 
