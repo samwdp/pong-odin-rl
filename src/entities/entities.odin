@@ -1,13 +1,22 @@
 package entities
 
 import rl "vendor:raylib"
+import "core:fmt"
 
 GameState :: struct {
-    show_fps:   bool,
-    target_fps: i32,
-    entities:   [dynamic]Entity,
+    show_fps:      bool,
+    target_fps:    i32,
+    player1_score: i32,
+    player2_score: i32,
+    font_size:     f32,
+    font_padding:  f32,
+    entities:      [dynamic]Entity,
 }
 
+Players :: enum {
+    LEFT,
+    RIGHT,
+}
 EntityType :: enum {
     BALL,
     PADDLE,
@@ -18,6 +27,18 @@ Entity :: struct {
     pos, dim, speed: rl.Vector2,
     update:          proc(self: ^Entity, game: ^GameState),
     draw:            proc(self: ^Entity),
+}
+
+update_font :: proc(game: ^GameState){
+
+    if rl.IsKeyDown(rl.KeyboardKey.J) {
+        game.font_size -= 1
+    }
+
+    if rl.IsKeyDown(rl.KeyboardKey.K) {
+
+        game.font_size += 1
+    }
 }
 
 updateBall :: proc(self: ^Entity, game: ^GameState) {
@@ -43,9 +64,8 @@ updatePlayer1 :: proc(self: ^Entity, game: ^GameState) {
     if rl.IsKeyDown(rl.KeyboardKey.S) {
         self.pos.y += self.speed.y * rl.GetFrameTime()
     }
-    ball_collision(self, game)
     paddle_collision(self)
-
+    ball_collision(self, game)
 }
 
 
@@ -57,9 +77,8 @@ updatePlayer2 :: proc(self: ^Entity, game: ^GameState) {
     if rl.IsKeyDown(rl.KeyboardKey.DOWN) {
         self.pos.y -= self.speed.y * rl.GetFrameTime()
     }
-
-    ball_collision(self, game)
     paddle_collision(self)
+    ball_collision(self, game)
 }
 
 drawBall :: proc(self: ^Entity) {
@@ -101,4 +120,48 @@ find_entity :: proc(game: ^GameState, type: EntityType) -> ^Entity {
         }
     }
     return nil
+}
+
+draw_left_text :: proc(font: rl.Font, game: ^GameState) {
+    left := rl.TextFormat("Player 1: %d", game.player1_score)
+    lefttextdim := rl.MeasureTextEx(
+        font,
+        left,
+        game.font_size,
+        game.font_padding,
+    )
+    left_text_location := rl.Vector2{
+        ((f32(rl.GetScreenWidth()) * 0.25) - lefttextdim.y),
+        10,
+    }
+    rl.DrawTextEx(
+        font,
+        left,
+        left_text_location,
+        game.font_size,
+        game.font_padding,
+        rl.RED,
+    )
+}
+
+draw_right_text :: proc(font: rl.Font, game: ^GameState) {
+    left := rl.TextFormat("Player 2: %d", game.player2_score)
+    lefttextdim := rl.MeasureTextEx(
+        font,
+        left,
+        game.font_size,
+        game.font_padding,
+    )
+    left_text_location := rl.Vector2{
+        ((f32(rl.GetScreenWidth()) * 0.75) - lefttextdim.y),
+        10,
+    }
+    rl.DrawTextEx(
+        font,
+        left,
+        left_text_location,
+        game.font_size,
+        game.font_padding,
+        rl.RED,
+    )
 }
